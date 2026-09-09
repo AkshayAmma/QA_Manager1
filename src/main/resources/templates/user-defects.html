@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>
+        My Defects
+    </title>
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+
+        body{
+            background:#f4f7fc;
+            font-family:"Segoe UI",sans-serif;
+        }
+
+        .header{
+            background:linear-gradient(135deg,#0d6efd,#4f46e5);
+            color:white;
+            padding:25px;
+            border-radius:15px;
+            margin-bottom:25px;
+            box-shadow:0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .card{
+            border:none;
+            border-radius:15px;
+            box-shadow:0 4px 15px rgba(0,0,0,0.08);
+            transition:0.3s;
+        }
+
+        .card:hover{
+            transform:translateY(-4px);
+            box-shadow:0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .stat-card{
+            text-align:center;
+            padding:20px;
+        }
+
+        .stat-number{
+            font-size:30px;
+            font-weight:bold;
+        }
+
+        .table-card{
+            overflow:hidden;
+            border-radius:15px;
+        }
+
+        .table thead{
+            background:linear-gradient(135deg,#0d6efd,#4f46e5);
+            color:white;
+        }
+
+        .table thead th{
+            border:none;
+            text-align:center;
+            padding:15px;
+        }
+
+        .table tbody td{
+            text-align:center;
+            vertical-align:middle;
+            padding:15px;
+        }
+
+        .table tbody tr:hover{
+            background:#eef5ff;
+        }
+
+        .defect-id{
+            background:#dc3545;
+            color:white;
+            padding:8px 14px;
+            border-radius:20px;
+            font-weight:600;
+        }
+
+        .severity-critical{
+            background:#6f42c1;
+            color:white;
+            padding:6px 12px;
+            border-radius:20px;
+            font-weight:600;
+        }
+
+        .severity-high{
+            background:#dc3545;
+            color:white;
+            padding:6px 12px;
+            border-radius:20px;
+            font-weight:600;
+        }
+
+        .severity-medium{
+            background:#fd7e14;
+            color:white;
+            padding:6px 12px;
+            border-radius:20px;
+            font-weight:600;
+        }
+
+        .severity-low{
+            background:#20c997;
+            color:white;
+            padding:6px 12px;
+            border-radius:20px;
+            font-weight:600;
+        }
+
+        .status-open{
+            background:#dc3545;
+            color:white;
+            padding:6px 12px;
+            border-radius:20px;
+            font-weight:600;
+        }
+
+        .status-progress{
+            background:#0dcaf0;
+            color:white;
+            padding:6px 12px;
+            border-radius:20px;
+            font-weight:600;
+        }
+
+        .status-closed{
+            background:#198754;
+            color:white;
+            padding:6px 12px;
+            border-radius:20px;
+            font-weight:600;
+        }
+
+        .empty-state{
+            text-align:center;
+            padding:40px;
+            color:#6c757d;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container py-4">
+
+    <!-- Header -->
+
+    <div class="header">
+
+        <div class="d-flex justify-content-between align-items-center">
+
+            <div>
+
+                <h2 class="mb-1">
+                    <i class="bi bi-bug-fill"></i>
+                    My Defects
+                </h2>
+
+                <p class="mb-0">
+                    Track and manage raised defects
+                </p>
+
+            </div>
+
+            <span class="badge bg-light text-dark fs-6">
+                Defect Tracker
+            </span>
+
+        </div>
+
+    </div>
+
+    <!-- Back Button -->
+
+    <div class="mb-4">
+
+        <a th:href="@{/user}"
+           class="btn btn-secondary">
+
+            <i class="bi bi-arrow-left"></i>
+            Back To Dashboard
+
+        </a>
+
+    </div>
+
+    <!-- Statistics -->
+
+    <div class="row mb-4">
+
+        <div class="col-md-4">
+
+            <div class="card stat-card">
+
+                <h6>Total Defects</h6>
+
+                <div class="stat-number text-danger"
+                     th:text="${defects != null ? #lists.size(defects) : 0}">
+                    0
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card stat-card">
+
+                <h6>Open Defects</h6>
+
+                <div class="stat-number text-warning"
+                     th:text="${openCount}">
+                    0
+                </div>
+
+            </div>
+
+        </div>
+
+        <div class="col-md-4">
+
+            <div class="card stat-card">
+
+                <h6>Closed Defects</h6>
+
+                <div class="stat-number text-success"
+                     th:text="${closedCount}">
+                    0
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Defect Table -->
+
+    <div class="card table-card">
+
+        <div class="card-body">
+
+            <h4 class="mb-4">
+
+                <i class="bi bi-list-ul"></i>
+
+                Defect Details
+
+            </h4>
+
+            <div class="table-responsive">
+
+                <table class="table table-hover">
+
+                    <thead>
+
+                    <tr>
+
+                        <th>Defect ID</th>
+
+                        <th>Summary</th>
+
+                        <th>Severity</th>
+
+                        <th>Status</th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    <tr th:each="defect : ${defects}">
+
+                        <td>
+
+                            <span class="defect-id"
+                                  th:text="${defect.defectId}">
+                            </span>
+
+                        </td>
+
+                        <td th:text="${defect.summary}">
+                        </td>
+
+                        <td>
+
+                            <span th:text="${defect.severity}"
+                                  th:classappend="${defect.severity == 'CRITICAL'} ? ' severity-critical' :
+                                                  (${defect.severity == 'HIGH'} ? ' severity-high' :
+                                                  (${defect.severity == 'MEDIUM'} ? ' severity-medium' :
+                                                  ' severity-low'))">
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <span th:text="${defect.status}"
+                                  th:classappend="${defect.status == 'OPEN'} ? ' status-open' :
+                                                  (${defect.status == 'IN_PROGRESS'} ? ' status-progress' :
+                                                  ' status-closed')">
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    <tr th:if="${defects == null or #lists.isEmpty(defects)}">
+
+                        <td colspan="4"
+                            class="empty-state">
+
+                            <i class="bi bi-check-circle-fill
+                                      fs-1 text-success">
+                            </i>
+
+                            <div class="mt-3">
+                                No defects found
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+</body>
+
+</html>

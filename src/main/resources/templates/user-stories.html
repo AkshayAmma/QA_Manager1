@@ -1,0 +1,321 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Assigned Stories</title>
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
+
+    <link rel="stylesheet"
+          href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+    <style>
+
+        body{
+            background:#f4f7fc;
+            font-family:"Segoe UI",sans-serif;
+        }
+
+        .header{
+            background:linear-gradient(135deg,#0d6efd,#4f46e5);
+            color:white;
+            padding:25px;
+            border-radius:15px;
+            margin-bottom:25px;
+            box-shadow:0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .card{
+            border:none;
+            border-radius:15px;
+            box-shadow:0 4px 15px rgba(0,0,0,0.08);
+            transition:0.3s;
+        }
+
+        .card:hover{
+            transform:translateY(-3px);
+            box-shadow:0 8px 20px rgba(0,0,0,0.15);
+        }
+
+        .stats-card{
+            text-align:center;
+            padding:20px;
+        }
+
+        .stats-number{
+            font-size:32px;
+            font-weight:bold;
+            color:#0d6efd;
+        }
+
+        .table-card{
+            overflow:hidden;
+            border-radius:15px;
+        }
+
+        .table thead{
+            background:linear-gradient(135deg,#0d6efd,#4f46e5);
+            color:white;
+        }
+
+        .table thead th{
+            border:none;
+            text-align:center;
+            padding:15px;
+        }
+
+        .table tbody td{
+            text-align:center;
+            vertical-align:middle;
+            padding:15px;
+        }
+
+        .table tbody tr:hover{
+            background:#eef5ff;
+        }
+
+        .story-id{
+            background:#0d6efd;
+            color:white;
+            padding:8px 14px;
+            border-radius:20px;
+            font-weight:600;
+        }
+
+        .story-name{
+            font-weight:600;
+            color:#495057;
+        }
+
+        .sprint-badge{
+            background:#6f42c1;
+            color:white;
+            padding:8px 14px;
+            border-radius:20px;
+            font-weight:600;
+        }
+
+        .points-badge{
+            background:#ffc107;
+            color:black;
+            padding:8px 14px;
+            border-radius:20px;
+            font-weight:600;
+        }
+
+        .testcase-badge{
+            background:#20c997;
+            color:white;
+            padding:8px 14px;
+            border-radius:20px;
+            font-weight:600;
+        }
+
+        .empty-state{
+            text-align:center;
+            padding:40px;
+            color:#6c757d;
+            font-size:18px;
+        }
+
+        .footer{
+            text-align:center;
+            margin-top:20px;
+            color:gray;
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+<div class="container py-4">
+
+    <!-- Header -->
+
+    <div class="header">
+
+        <div class="d-flex justify-content-between align-items-center">
+
+            <div>
+
+                <h2 class="mb-1">
+                    <i class="bi bi-journal-bookmark-fill"></i>
+                    Assigned Stories
+                </h2>
+
+                <p class="mb-0">
+                    View all stories assigned to your sprint
+                </p>
+
+            </div>
+
+            <span class="badge bg-light text-dark fs-6">
+                Sprint Board
+            </span>
+
+        </div>
+
+    </div>
+
+    <!-- Back Button -->
+
+    <div class="mb-4">
+
+        <a th:href="@{/user}"
+           class="btn btn-secondary">
+
+            <i class="bi bi-arrow-left"></i>
+            Back To Dashboard
+
+        </a>
+
+    </div>
+
+    <!-- Summary -->
+
+    <div class="row mb-4">
+
+        <div class="col-md-4">
+
+            <div class="card stats-card">
+
+                <h6>Total Assigned Stories</h6>
+
+                <div class="stats-number"
+                     th:text="${stories != null ? #lists.size(stories) : 0}">
+                    0
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Stories Table -->
+
+    <div class="card table-card">
+
+        <div class="card-body">
+
+            <h4 class="mb-4">
+
+                <i class="bi bi-list-ul"></i>
+
+                Story Details
+
+            </h4>
+
+            <div class="table-responsive">
+
+                <table class="table table-hover">
+
+                    <thead>
+
+                    <tr>
+
+                        <th>Story ID</th>
+
+                        <th>Story Name</th>
+
+                        <th>Sprint</th>
+
+                        <th>Story Points</th>
+
+                        <th>Total Test Cases</th>
+
+                    </tr>
+
+                    </thead>
+
+                    <tbody>
+
+                    <tr th:each="story : ${stories}">
+
+                        <td>
+
+                            <span class="story-id"
+                                  th:text="${story.storyId}">
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <span class="story-name"
+                                  th:text="${story.storyName}">
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <span class="sprint-badge"
+                                  th:text="${story.sprintName}">
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <span class="points-badge"
+                                  th:text="${story.storyPoints}">
+                            </span>
+
+                        </td>
+
+                        <td>
+
+                            <span class="testcase-badge"
+                                  th:text="${story.totalTestCases}">
+                            </span>
+
+                        </td>
+
+                    </tr>
+
+                    <tr th:if="${stories == null or #lists.isEmpty(stories)}">
+
+                        <td colspan="5"
+                            class="empty-state">
+
+                            <i class="bi bi-inbox-fill fs-1"></i>
+
+                            <div class="mt-3">
+
+                                No stories assigned
+
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                    </tbody>
+
+                </table>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    <div class="footer">
+
+        © 2026 QA Task Management System
+
+    </div>
+
+</div>
+
+</body>
+
+</html>
